@@ -21,14 +21,21 @@ export class MovimientoService {
     const query = this.movimientoRepository.createQueryBuilder('movimiento');
 
     /* Inner Join */
+    // Habitacion
     query.innerJoinAndSelect('movimiento.habitacion', 'habitacion');
-    // Habitacion.Empresa
-    // query.innerJoinAndSelect('habitacion.empresa', 'empresa');
     query.innerJoinAndSelect('habitacion.tipoHabitacion', 'tipoHabitacion');
     query.innerJoinAndSelect('habitacion.piso', 'piso');
 
-    // Movimiento.StatusHabitacion
+    // Empresa
+    query.innerJoinAndSelect('movimiento.empresa', 'empresa');
+
+    // Estados del Movimiento
     query.innerJoinAndSelect('movimiento.statusHabitacion', 'statusHabitacion');
+    query.innerJoinAndSelect('movimiento.statusLimpH', 'statusLimpH');
+    query.innerJoinAndSelect('movimiento.statusLimpC', 'statusLimpC');
+    query.innerJoinAndSelect('movimiento.statusLimpS', 'statusLimpS');
+
+    // Usuarios
     query.leftJoinAndSelect('movimiento.usuarioH', 'usuarioH');
     query.leftJoinAndSelect('movimiento.usuarioS', 'usuarioS');
     query.leftJoinAndSelect('movimiento.usuarioC', 'usuarioC');

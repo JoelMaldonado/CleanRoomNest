@@ -1,6 +1,7 @@
 import { Amenitie } from 'src/modules/admin/amenitie/entities/amenitie.entity';
 import { Habitacion } from 'src/modules/admin/habitacion/entities/habitacion.entity';
 import { StatusHabitacion } from 'src/modules/admin/status-habitacion/entities/status-habitacion.entity';
+import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'Empresas' })
@@ -69,6 +70,10 @@ export class Empresa {
   fecmodificacion: Date;
 
   // Relaciones One To Many //
+
+  @OneToMany(() => Movimiento, (m) => m.empresa)
+  movimientos: Movimiento[];
+
   @OneToMany(() => Amenitie, (a) => a.empresa)
   amenities: Amenitie[];
 
@@ -76,5 +81,5 @@ export class Empresa {
   habitaciones: Habitacion[];
 
   @OneToMany(() => StatusHabitacion, (s) => s.empresa)
-  statusHabitaciones: StatusHabitacion[]
+  statusHabitaciones: StatusHabitacion[];
 }

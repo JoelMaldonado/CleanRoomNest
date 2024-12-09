@@ -10,6 +10,7 @@ import { HabitacionModule } from './modules/admin/habitacion/habitacion.module';
 import { TipoHabitacionModule } from './modules/admin/tipo-habitacion/tipo-habitacion.module';
 import { PisoModule } from './modules/admin/piso/piso.module';
 import { StatusHabitacionModule } from './modules/admin/status-habitacion/status-habitacion.module';
+import { StatusLimpiezaModule } from './modules/admin/status-limpieza/status-limpieza.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { StatusHabitacionModule } from './modules/admin/status-habitacion/status
     TipoHabitacionModule,
     PisoModule,
     StatusHabitacionModule,
+    StatusLimpiezaModule,
   ],
   controllers: [],
   providers: [],

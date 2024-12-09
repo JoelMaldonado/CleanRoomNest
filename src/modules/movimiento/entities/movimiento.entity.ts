@@ -1,5 +1,7 @@
 import { Habitacion } from 'src/modules/admin/habitacion/entities/habitacion.entity';
 import { StatusHabitacion } from 'src/modules/admin/status-habitacion/entities/status-habitacion.entity';
+import { StatusLimpieza } from 'src/modules/admin/status-limpieza/entities/status-limpieza.entity';
+import { Empresa } from 'src/modules/empresa/entities/empresa.entity';
 import { Usuario } from 'src/modules/usuario/entities/usuario.entity';
 import {
   Column,
@@ -23,17 +25,11 @@ export class Movimiento {
   fechahoraH: Date;
 
 
-  @Column({ nullable: true })
-  id_statusLimpH: number;
-
   @Column({ type: 'datetime', nullable: true, default: null })
   fechahoraiC: Date;
 
   @Column({ type: 'datetime', nullable: true, default: null })
   fechahorafC: Date;
-
-  @Column({ nullable: true })
-  id_statusLimpC: number;
 
   @Column({ type: 'datetime', nullable: true, default: null })
   fechahoraiS: Date;
@@ -41,14 +37,8 @@ export class Movimiento {
   @Column({ type: 'datetime', nullable: true, default: null })
   fechahoraS: Date;
 
-  @Column({ nullable: true })
-  id_statusLimpS: number;
-
   @Column({ type: 'varchar', nullable: true, default: '' })
   observaciones: string;
-
-  @Column()
-  id_empresa: number;
 
   @Column({ type: 'varchar', nullable: true, default: '' })
   fotobanio: string;
@@ -78,10 +68,17 @@ export class Movimiento {
   enprocesoc: number;
 
   // Relaciones Many To One
+
+  // General
   @ManyToOne(() => Habitacion, (h) => h.movimientos)
   @JoinColumn({ name: 'id_habitacion' })
   habitacion: Habitacion;
 
+  @ManyToOne(() => Empresa, (e) => e.movimientos)
+  @JoinColumn({ name: 'id_empresa' })
+  empresa: Empresa;
+
+  // Usuarios
   @ManyToOne(() => Usuario, (usuario) => usuario.movimientosS)
   @JoinColumn({ name: 'id_usuarioS' })
   usuarioS: Usuario;
@@ -93,6 +90,20 @@ export class Movimiento {
   @ManyToOne(() => Usuario, (usuario) => usuario.movimientosC)
   @JoinColumn({ name: 'id_usuarioC' })
   usuarioC: Usuario;
+
+
+  // Estados del Movimiento
+  @ManyToOne(() => StatusLimpieza, (sl) => sl.movimientosH)
+  @JoinColumn({ name: 'id_statusLimpH' })
+  statusLimpH: StatusLimpieza;
+  
+  @ManyToOne(() => StatusLimpieza, (sl) => sl.movimientosC)
+  @JoinColumn({ name: 'id_statusLimpC' })
+  statusLimpC: StatusLimpieza;
+  
+  @ManyToOne(() => StatusLimpieza, (sl) => sl.movimientosS)
+  @JoinColumn({ name: 'id_statusLimpS' })
+  statusLimpS: StatusLimpieza;
 
   @ManyToOne(() => StatusHabitacion, (sh) => sh.movimientos)
   @JoinColumn({ name: 'id_statusHabH' })
