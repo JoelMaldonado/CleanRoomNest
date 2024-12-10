@@ -11,6 +11,8 @@ import { TipoHabitacionModule } from './modules/admin/tipo-habitacion/tipo-habit
 import { PisoModule } from './modules/admin/piso/piso.module';
 import { StatusHabitacionModule } from './modules/admin/status-habitacion/status-habitacion.module';
 import { StatusLimpiezaModule } from './modules/admin/status-limpieza/status-limpieza.module';
+import { RopaBlancaModule } from './modules/admin/ropa-blanca/ropa-blanca.module';
+import { FrigobarModule } from './modules/admin/frigobar/frigobar.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { StatusLimpiezaModule } from './modules/admin/status-limpieza/status-lim
     PisoModule,
     StatusHabitacionModule,
     StatusLimpiezaModule,
+    RopaBlancaModule,
+    FrigobarModule,
   ],
   controllers: [],
   providers: [],

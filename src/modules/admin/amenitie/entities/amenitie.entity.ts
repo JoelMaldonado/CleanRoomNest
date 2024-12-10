@@ -1,9 +1,11 @@
 import { Empresa } from 'src/modules/empresa/entities/empresa.entity';
+import { MovAmenities } from 'src/modules/movimiento/entities/mov-amenitie.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -70,4 +72,7 @@ export class Amenitie {
     default: '',
   })
   fecmodificacion: Date;
+
+  @OneToMany(() => MovAmenities, (ma) => ma.amenitie)
+  movAmenities: MovAmenities[];
 }

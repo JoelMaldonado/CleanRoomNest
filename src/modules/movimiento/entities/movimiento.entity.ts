@@ -9,9 +9,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { MovAmenities } from './mov-amenitie.entity';
+import { MovRopaBlanca } from './mov-ropablanca.entity';
+import { MovFrigobar } from './mov-frigobar.entity';
 
 @Entity({ name: 'Movimiento' })
 export class Movimiento {
@@ -23,7 +27,6 @@ export class Movimiento {
 
   @Column({ type: 'datetime', nullable: true, default: null })
   fechahoraH: Date;
-
 
   @Column({ type: 'datetime', nullable: true, default: null })
   fechahoraiC: Date;
@@ -108,4 +111,23 @@ export class Movimiento {
   @ManyToOne(() => StatusHabitacion, (sh) => sh.movimientos)
   @JoinColumn({ name: 'id_statusHabH' })
   statusHabitacion: StatusHabitacion;
+
+  // Movimiento Amenities
+  @OneToMany(
+    () => MovAmenities,
+    (ma) => ma.movimiento
+  )
+  amenities: MovAmenities[]; // Movimiento Amenities
+
+  @OneToMany(
+    () => MovRopaBlanca,
+    (mr) => mr.movimiento
+  )
+  ropaBlanca: MovRopaBlanca[]; // Movimiento Ropa Blanca
+
+  @OneToMany(
+    () => MovFrigobar,
+    (mf) => mf.movimiento
+  )
+  frigobar: MovFrigobar[]
 }

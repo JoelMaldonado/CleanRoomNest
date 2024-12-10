@@ -1,13 +1,8 @@
 import { StatusLimpieza } from 'src/modules/admin/status-limpieza/entities/status-limpieza.entity';
+import { MovAmenities } from 'src/modules/movimiento/entities/mov-amenitie.entity';
+import { MovFrigobar } from 'src/modules/movimiento/entities/mov-frigobar.entity';
+import { MovRopaBlanca } from 'src/modules/movimiento/entities/mov-ropablanca.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
-
-export const mapStatusLimpieza = (status?: StatusLimpieza) => {
-  return {
-    id: status?.id ?? null,
-    codigo: status?.codigo ?? null,
-    descripcion: status?.descripcion ?? null,
-  };
-};
 
 export const mapMovimiento = (mov: Movimiento) => {
   let tiempoTardado = '';
@@ -75,8 +70,40 @@ export const mapMovimiento = (mov: Movimiento) => {
       habitacion: mov?.fotohabitacion ?? null,
       extra: mov?.fotoextra ?? null,
     },
-    amenities: [],
-    ropablanca: [],
-    frigobar: []
+    amenities: mov?.amenities?.map(mapMovimientoAmenities) ?? [],
+    ropablanca: mov?.ropaBlanca?.map(mapMovimientoRopaBlanca) ?? [],
+    frigobar: mov?.frigobar?.map(mapMovFrigobar) ?? [],
+  };
+};
+
+const mapMovimientoAmenities = (movAmenitie?: MovAmenities) => {
+  return {
+    id: movAmenitie?.id ?? null,
+    descrip: movAmenitie?.amenitie?.descripcion ?? null,
+    cantidad: movAmenitie?.cantidad ?? null,
+  };
+};
+
+const mapMovimientoRopaBlanca = (movRopaBlanca?: MovRopaBlanca) => {
+  return {
+    id: movRopaBlanca?.id ?? null,
+    descrip: movRopaBlanca?.ropaBlanca?.descripcion ?? null,
+    cantidad: movRopaBlanca?.ropaBlanca?.codigo ?? null,
+  };
+};
+
+const mapMovFrigobar = (movFrigobar?: MovFrigobar) => {
+  return {
+    id: movFrigobar?.id ?? null,
+    descrip: movFrigobar?.frigobar?.descripcion ?? null,
+    cantidad: movFrigobar?.cantidad_in ?? null,
+  };
+};
+
+export const mapStatusLimpieza = (status?: StatusLimpieza) => {
+  return {
+    id: status?.id ?? null,
+    codigo: status?.codigo ?? null,
+    descripcion: status?.descripcion ?? null,
   };
 };

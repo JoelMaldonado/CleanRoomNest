@@ -6,19 +6,31 @@ import { Movimiento } from './entities/movimiento.entity';
 import { Repository } from 'typeorm';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { mapMovimiento } from 'src/utils/map.utils';
+import { MovAmenities } from './entities/mov-amenitie.entity';
+import { MovFrigobar } from './entities/mov-frigobar.entity';
+import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
 
 @Injectable()
 export class MovimientoService {
   constructor(
     @InjectRepository(Movimiento)
-    private readonly movimientoRepository: Repository<Movimiento>,
+    private readonly repo: Repository<Movimiento>,
+
+    @InjectRepository(MovAmenities)
+    private readonly repoMovAmenities: Repository<MovAmenities>,
+
+    @InjectRepository(MovRopaBlanca)
+    private readonly repoMovRopaBlanca: Repository<MovRopaBlanca>,
+
+    @InjectRepository(MovFrigobar)
+    private readonly repoMovFrigobar: Repository<MovFrigobar>,
   ) {}
   create(createMovimientoDto: CreateMovimientoDto) {
     return 'This action adds a new movimiento';
   }
 
   async findAll(filtertDto: MovimientoFilterDto) {
-    const query = this.movimientoRepository.createQueryBuilder('movimiento');
+    const query = this.repo.createQueryBuilder('movimiento');
 
     /* Inner Join */
     // Habitacion
@@ -39,6 +51,9 @@ export class MovimientoService {
     query.leftJoinAndSelect('movimiento.usuarioH', 'usuarioH');
     query.leftJoinAndSelect('movimiento.usuarioS', 'usuarioS');
     query.leftJoinAndSelect('movimiento.usuarioC', 'usuarioC');
+
+    // Movimiento Amenities
+    query.leftJoinAndSelect('movimiento.ropaBlanca', 'ropaBlanca');
 
     if (filtertDto.fecha) {
       query.andWhere('movimiento.fecha = :fecha', { fecha: filtertDto.fecha });
@@ -67,7 +82,7 @@ export class MovimientoService {
   }
 
   async findOne(id: number) {
-    const movimiento = await this.movimientoRepository.findOne({
+    const movimiento = await this.repo.findOne({
       relations: [
         'habitacion',
         'statusHabitacion',
@@ -76,6 +91,12 @@ export class MovimientoService {
         'usuarioC',
         'habitacion.tipoHabitacion',
         'habitacion.piso',
+        'amenities',
+        'amenities.amenitie',
+        'ropaBlanca',
+        'ropaBlanca.ropaBlanca',
+        'frigobar',
+        'frigobar.frigobar',
       ],
       where: { id },
     });
