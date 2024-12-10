@@ -13,10 +13,16 @@ import { StatusHabitacionModule } from './modules/admin/status-habitacion/status
 import { StatusLimpiezaModule } from './modules/admin/status-limpieza/status-limpieza.module';
 import { RopaBlancaModule } from './modules/admin/ropa-blanca/ropa-blanca.module';
 import { FrigobarModule } from './modules/admin/frigobar/frigobar.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '30s' },
+    }),
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: process.env.DB_HOST,
@@ -26,10 +32,10 @@ import { FrigobarModule } from './modules/admin/frigobar/frigobar.module';
       database: process.env.DB_NAME,
       options: {
         encrypt: true,
-        trustServerCertificate: true
+        trustServerCertificate: true,
       },
       autoLoadEntities: true,
-      synchronize: false
+      synchronize: false,
     }),
     AuthModule,
     MovimientoModule,

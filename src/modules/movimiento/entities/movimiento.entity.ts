@@ -94,16 +94,15 @@ export class Movimiento {
   @JoinColumn({ name: 'id_usuarioC' })
   usuarioC: Usuario;
 
-
   // Estados del Movimiento
   @ManyToOne(() => StatusLimpieza, (sl) => sl.movimientosH)
   @JoinColumn({ name: 'id_statusLimpH' })
   statusLimpH: StatusLimpieza;
-  
+
   @ManyToOne(() => StatusLimpieza, (sl) => sl.movimientosC)
   @JoinColumn({ name: 'id_statusLimpC' })
   statusLimpC: StatusLimpieza;
-  
+
   @ManyToOne(() => StatusLimpieza, (sl) => sl.movimientosS)
   @JoinColumn({ name: 'id_statusLimpS' })
   statusLimpS: StatusLimpieza;
@@ -113,21 +112,12 @@ export class Movimiento {
   statusHabitacion: StatusHabitacion;
 
   // Movimiento Amenities
-  @OneToMany(
-    () => MovAmenities,
-    (ma) => ma.movimiento
-  )
+  @OneToMany(() => MovAmenities, (ma) => ma.movimiento)
   amenities: MovAmenities[]; // Movimiento Amenities
 
-  @OneToMany(
-    () => MovRopaBlanca,
-    (mr) => mr.movimiento
-  )
+  @OneToMany(() => MovRopaBlanca, (mr) => mr.movimiento)
   ropaBlanca: MovRopaBlanca[]; // Movimiento Ropa Blanca
 
-  @OneToMany(
-    () => MovFrigobar,
-    (mf) => mf.movimiento
-  )
-  frigobar: MovFrigobar[]
+  @OneToMany(() => MovFrigobar, (mf) => mf.movimiento)
+  frigobar: MovFrigobar[];
 }

@@ -1,8 +1,11 @@
+import { Empresa } from 'src/modules/empresa/entities/empresa.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -43,9 +46,6 @@ export class Usuario {
   @Column({ type: 'int', nullable: true })
   id_tipousuario: number;
 
-  @Column({ type: 'int' })
-  id_empresa: number;
-
   @Column({ type: 'datetime', nullable: true, default: null })
   fecingreso: Date;
 
@@ -73,6 +73,12 @@ export class Usuario {
   @Column({ type: 'nvarchar', default: '' })
   plataforma: string;
 
+  @ManyToOne(
+    () => Empresa,
+    (e) => e.usuarios,
+  )
+  @JoinColumn({ name: 'id_empresa' })
+  empresa: Empresa;
 
   @OneToMany(
     () => Movimiento,

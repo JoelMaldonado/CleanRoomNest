@@ -35,5 +35,16 @@ export class UsuarioService {
     return `This action removes a #${id} usuario`;
   }
 
-  
+  async findByLogin(user: string, ruc: string) {
+    const usuario = await this.repo.findOne({
+      relations: ['empresa'],
+      where: {
+        codusu: user,
+        empresa: {
+          ruc,
+        },
+      },
+    });
+    return usuario;
+  }
 }

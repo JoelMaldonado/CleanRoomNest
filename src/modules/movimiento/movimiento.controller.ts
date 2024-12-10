@@ -1,8 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { MovimientoService } from './movimiento.service';
 import { CreateMovimientoDto } from './dto/create-movimiento.dto';
 import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
 @Controller('movimiento')
 export class MovimientoController {
@@ -14,19 +25,21 @@ export class MovimientoController {
   }
 
   @Get()
-  findAll(
-    @Query() filtertDto: MovimientoFilterDto
-  ) {
+  findAll(@Query() filtertDto: MovimientoFilterDto) {
     return this.movimientoService.findAll(filtertDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.movimientoService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMovimientoDto: UpdateMovimientoDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateMovimientoDto: UpdateMovimientoDto,
+  ) {
     return this.movimientoService.update(+id, updateMovimientoDto);
   }
 

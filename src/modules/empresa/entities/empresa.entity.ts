@@ -4,6 +4,7 @@ import { Piso } from 'src/modules/admin/piso/entities/piso.entity';
 import { StatusHabitacion } from 'src/modules/admin/status-habitacion/entities/status-habitacion.entity';
 import { StatusLimpieza } from 'src/modules/admin/status-limpieza/entities/status-limpieza.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
+import { Usuario } from 'src/modules/usuario/entities/usuario.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'Empresas' })
@@ -93,4 +94,10 @@ export class Empresa {
     (sl) => sl.empresa
   )
   statusLimpiezas: StatusLimpieza[];
+
+  @OneToMany(
+    () => Usuario,
+    (u) => u.empresa
+  )
+  usuarios: Usuario[]
 }
