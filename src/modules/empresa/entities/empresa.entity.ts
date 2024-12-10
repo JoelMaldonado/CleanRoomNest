@@ -1,6 +1,8 @@
 import { Amenitie } from 'src/modules/admin/amenitie/entities/amenitie.entity';
 import { Habitacion } from 'src/modules/admin/habitacion/entities/habitacion.entity';
+import { Piso } from 'src/modules/admin/piso/entities/piso.entity';
 import { StatusHabitacion } from 'src/modules/admin/status-habitacion/entities/status-habitacion.entity';
+import { StatusLimpieza } from 'src/modules/admin/status-limpieza/entities/status-limpieza.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -80,6 +82,15 @@ export class Empresa {
   @OneToMany(() => Habitacion, (h) => h.empresa)
   habitaciones: Habitacion[];
 
+  @OneToMany(() => Piso, (p) => p.empresa)
+  pisos: Piso[]
+
   @OneToMany(() => StatusHabitacion, (s) => s.empresa)
   statusHabitaciones: StatusHabitacion[];
+
+  @OneToMany(
+    () => StatusLimpieza,
+    (sl) => sl.empresa
+  )
+  statusLimpiezas: StatusLimpieza[];
 }

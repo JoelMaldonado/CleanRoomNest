@@ -1,3 +1,4 @@
+import { Empresa } from 'src/modules/empresa/entities/empresa.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 import {
   Entity,
@@ -6,6 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('StatusLimpieza')
@@ -22,9 +25,6 @@ export class StatusLimpieza {
   @Column({ type: 'char', default: 'S', length: 1 })
   activo: string;
 
-  @Column({ type: 'int', nullable: true })
-  id_empresa: number;
-
   @Column({ type: 'varchar', default: '', nullable: false })
   usuario: string;
 
@@ -36,6 +36,10 @@ export class StatusLimpieza {
 
   @UpdateDateColumn({ type: 'datetime', nullable: true })
   fecmodificacion: Date;
+
+  @ManyToOne(() => Empresa, (e) => e.statusLimpiezas)
+  @JoinColumn({ name: 'id_empresa' })
+  empresa: Empresa;
 
   @OneToMany(() => Movimiento, (m) => m.statusLimpH)
   movimientosH: Movimiento[];

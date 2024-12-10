@@ -1,19 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTipoHabitacionDto } from './dto/create-tipo-habitacion.dto';
 import { UpdateTipoHabitacionDto } from './dto/update-tipo-habitacion.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TipoHabitacion } from './entities/tipo-habitacion.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TipoHabitacionService {
+  constructor(
+    @InjectRepository(TipoHabitacion)
+    private readonly repo: Repository<TipoHabitacion>,
+  ) {}
+
   create(createTipoHabitacionDto: CreateTipoHabitacionDto) {
     return 'This action adds a new tipoHabitacion';
   }
 
-  findAll() {
-    return `This action returns all tipoHabitacion`;
+  async findAll() {
+    return await this.repo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tipoHabitacion`;
+  async findOne(id: number) {
+    return await this.repo.findOne({
+      where: { id },
+    });
   }
 
   update(id: number, updateTipoHabitacionDto: UpdateTipoHabitacionDto) {

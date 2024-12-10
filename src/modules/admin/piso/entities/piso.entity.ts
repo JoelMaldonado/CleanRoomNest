@@ -5,8 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Habitacion } from '../../habitacion/entities/habitacion.entity';
+import { Empresa } from 'src/modules/empresa/entities/empresa.entity';
 
 @Entity('Pisos')
 export class Piso {
@@ -22,8 +25,6 @@ export class Piso {
   @Column({ type: 'char', default: 'S' })
   activo: string;
 
-  @Column({ type: 'int' })
-  id_empresa: number;
 
   @Column({ type: 'varchar', default: '' })
   usuario: string;
@@ -38,6 +39,12 @@ export class Piso {
   fecmodificacion: Date;
 
   // Relacion Many To One
+  @ManyToOne(
+    () => Empresa,
+    (empresa) => empresa.pisos,
+  )
+  @JoinColumn({ name: 'id_empresa' })
+  empresa: Empresa;
 
   // Relacion One To Many
   @OneToMany(() => Habitacion, (habitacion) => habitacion.piso)
