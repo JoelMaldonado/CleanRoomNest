@@ -9,11 +9,6 @@ export class MovimientoFilterDto {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  id_empresa?: number;
-
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
   page?: number = 1;
 
   @IsOptional()

@@ -27,14 +27,13 @@ export class AuthService {
 
     const payload = {
         sub: usuario.id,
-        ruc: usuario.empresa.id
+        id_empresa: usuario.empresa.id
     }
     const token = this.jwtService.sign(payload);
     return {
         id: usuario.id,
         nombre: usuario.usuario,
         tipoUsuario: usuario.id_tipousuario,
-        ruc: usuario.empresa.id,
         token: token
     };
   }

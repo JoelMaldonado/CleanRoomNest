@@ -14,6 +14,7 @@ import { StatusLimpiezaModule } from './modules/admin/status-limpieza/status-lim
 import { RopaBlancaModule } from './modules/admin/ropa-blanca/ropa-blanca.module';
 import { FrigobarModule } from './modules/admin/frigobar/frigobar.module';
 import { JwtModule } from '@nestjs/jwt';
+import { constants } from './config/constants';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '30s' },
+      signOptions: { expiresIn: constants.expiresIn },
     }),
     TypeOrmModule.forRoot({
       type: 'mssql',

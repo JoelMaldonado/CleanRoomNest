@@ -8,12 +8,15 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { MovimientoService } from './movimiento.service';
 import { CreateMovimientoDto } from './dto/create-movimiento.dto';
 import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { Request } from 'express';
+import { constants } from 'src/config/constants';
 
 @Controller('movimiento')
 export class MovimientoController {
@@ -24,9 +27,11 @@ export class MovimientoController {
     return this.movimientoService.create(createMovimientoDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  findAll(@Query() filtertDto: MovimientoFilterDto) {
-    return this.movimientoService.findAll(filtertDto);
+  findAll(@Query() filtertDto: MovimientoFilterDto, @Req() req: Request) {
+    const user = req[constants.user];
+    return this.movimientoService.findAll(filtertDto, user.id_empresa);
   }
 
   @UseGuards(AuthGuard)

@@ -25,11 +25,12 @@ export class MovimientoService {
     @InjectRepository(MovFrigobar)
     private readonly repoMovFrigobar: Repository<MovFrigobar>,
   ) {}
+
   create(createMovimientoDto: CreateMovimientoDto) {
     return 'This action adds a new movimiento';
   }
 
-  async findAll(filtertDto: MovimientoFilterDto) {
+  async findAll(filtertDto: MovimientoFilterDto, id_empresa: number) {
     const query = this.repo.createQueryBuilder('movimiento');
 
     /* Inner Join */
@@ -59,11 +60,7 @@ export class MovimientoService {
       query.andWhere('movimiento.fecha = :fecha', { fecha: filtertDto.fecha });
     }
 
-    if (filtertDto.id_empresa) {
-      query.andWhere('movimiento.id_empresa = :id_empresa', {
-        id_empresa: filtertDto.id_empresa,
-      });
-    }
+    query.andWhere('movimiento.id_empresa = :id_empresa', { id_empresa });
 
     const { page = 1, limit = 10 } = filtertDto;
 
