@@ -42,11 +42,10 @@ export class MovimientoController {
     @Query('limit', ParseIntPipe) limit: number = 10,
     @Query('id_empresa') id_empresa: number,
     @Query('fecha') fecha: string,
-    @Query('id_usuario_hk') id_usuario_hk: number,
-    @Query('id_usuario_c') id_usuario_c: number,
-    @Query('id_usuario_s') id_usuario_s: number,
+    @Query('cod_tipo_usuario') cod_tipo_usuario: string,
+    @Query('id_usuario') id_usuario: number,
   ) {
-    return this.movimientoService.findAllSimple(page, limit, id_empresa, fecha, id_usuario_hk, id_usuario_c, id_usuario_s);
+    return this.movimientoService.findAllSimple(page, limit, id_empresa, fecha, cod_tipo_usuario, id_usuario);
   }
 
   @UseGuards(AuthGuard)

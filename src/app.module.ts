@@ -15,6 +15,7 @@ import { RopaBlancaModule } from './modules/admin/ropa-blanca/ropa-blanca.module
 import { FrigobarModule } from './modules/admin/frigobar/frigobar.module';
 import { JwtModule } from '@nestjs/jwt';
 import { constants } from './config/constants';
+import { TipoUsuarioModule } from './modules/admin/tipo-usuario/tipo-usuario.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { constants } from './config/constants';
     StatusLimpiezaModule,
     RopaBlancaModule,
     FrigobarModule,
+    TipoUsuarioModule,
   ],
   controllers: [],
   providers: [],

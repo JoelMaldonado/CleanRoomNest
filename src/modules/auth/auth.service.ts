@@ -22,19 +22,22 @@ export class AuthService {
     const passEncriptada = encriptar(pass);
 
     if (passEncriptada !== usuario.contrasenia) {
-        throw new UnauthorizedException('Contraseña incorrecta', usuario.contrasenia);
+      throw new UnauthorizedException(
+        'Contraseña incorrecta',
+        usuario.contrasenia,
+      );
     }
 
     const payload = {
-        sub: usuario.id,
-        id_empresa: usuario.empresa.id
-    }
+      sub: usuario.id,
+      id_empresa: usuario.empresa.id,
+    };
     const token = this.jwtService.sign(payload);
     return {
-        id: usuario.id,
-        nombre: usuario.usuario,
-        tipoUsuario: usuario.id_tipousuario,
-        token: token
+      id: usuario.id,
+      nombre: usuario.usuario,
+      tipoUsuario: usuario.tipoUsuario.id,
+      token: token,
     };
   }
 }

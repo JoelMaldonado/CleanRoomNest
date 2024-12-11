@@ -1,3 +1,4 @@
+import { TipoUsuario } from 'src/modules/admin/tipo-usuario/entities/tipo-usuario.entity';
 import { Empresa } from 'src/modules/empresa/entities/empresa.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 import {
@@ -43,9 +44,6 @@ export class Usuario {
   @Column({ type: 'char', default: 'S' })
   activo: string;
 
-  @Column({ type: 'int', nullable: true })
-  id_tipousuario: number;
-
   @Column({ type: 'datetime', nullable: true, default: null })
   fecingreso: Date;
 
@@ -73,28 +71,24 @@ export class Usuario {
   @Column({ type: 'nvarchar', default: '' })
   plataforma: string;
 
-  @ManyToOne(
-    () => Empresa,
-    (e) => e.usuarios,
-  )
+  // Relacion Muchos a Uno
+
+  @ManyToOne(() => Empresa, (e) => e.usuarios)
   @JoinColumn({ name: 'id_empresa' })
   empresa: Empresa;
 
-  @OneToMany(
-    () => Movimiento,
-    (movimiento) => movimiento.usuarioH,
-  )
-  movimientosH: Movimiento[]
+  @ManyToOne(() => TipoUsuario, (tipousuario) => tipousuario.usuarios)
+  @JoinColumn({ name: 'id_tipousuario' })
+  tipoUsuario: TipoUsuario;
 
-  @OneToMany(
-    () => Movimiento,
-    (movimiento) => movimiento.usuarioS,
-  )
-  movimientosS: Movimiento[]
+  // Relacion Uno a Muchos
 
-  @OneToMany(
-    () => Movimiento,
-    (movimiento) => movimiento.usuarioC,
-  )
-  movimientosC: Movimiento[]
+  @OneToMany(() => Movimiento, (movimiento) => movimiento.usuarioH)
+  movimientosH: Movimiento[];
+
+  @OneToMany(() => Movimiento, (movimiento) => movimiento.usuarioS)
+  movimientosS: Movimiento[];
+
+  @OneToMany(() => Movimiento, (movimiento) => movimiento.usuarioC)
+  movimientosC: Movimiento[];
 }

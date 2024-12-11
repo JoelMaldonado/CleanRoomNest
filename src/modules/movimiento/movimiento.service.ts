@@ -84,9 +84,8 @@ export class MovimientoService {
     limit: number,
     id_empresa: number,
     fecha: string,
-    id_usuario_hk: number,
-    id_usuario_c: number,
-    id_usuario_s: number,
+    cod_tipo_usuario: string,
+    id_usuario: number,
   ) {
     const qb = this.repo.createQueryBuilder('movimiento');
 
@@ -108,16 +107,16 @@ export class MovimientoService {
       qb.andWhere('movimiento.fecha = :fecha', { fecha });
     }
 
-    if (id_usuario_hk) {
-      qb.andWhere('movimiento.usuarioH = :id_usuario_hk', { id_usuario_hk });
-    }
-
-    if (id_usuario_c) {
-      qb.andWhere('movimiento.usuarioC = :id_usuario_c', { id_usuario_c });
-    }
-
-    if (id_usuario_s) {
-      qb.andWhere('movimiento.usuarioS = :id_usuario_s', { id_usuario_s });
+    switch (cod_tipo_usuario) {
+      case 'H':
+        qb.andWhere('movimiento.usuarioH = :id_usuario', { id_usuario });
+        break;
+      case 'S':
+        qb.andWhere('movimiento.usuarioS = :id_usuario', { id_usuario });
+        break;
+      case 'C':
+        qb.andWhere('movimiento.usuarioC = :id_usuario', { id_usuario });
+        break;
     }
 
     // Paginacion
