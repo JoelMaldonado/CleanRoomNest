@@ -18,6 +18,7 @@ import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Request } from 'express';
 import { constants } from 'src/config/constants';
+import { log } from 'console';
 
 @Controller('movimiento')
 export class MovimientoController {
@@ -39,10 +40,13 @@ export class MovimientoController {
   findAllSimple(
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('limit', ParseIntPipe) limit: number = 10,
-    @Query('id_empresa', ParseIntPipe) id_empresa: number,
-    @Req() req: Request,
+    @Query('id_empresa') id_empresa: number,
+    @Query('fecha') fecha: string,
+    @Query('id_usuario_hk') id_usuario_hk: number,
+    @Query('id_usuario_c') id_usuario_c: number,
+    @Query('id_usuario_s') id_usuario_s: number,
   ) {
-    return this.movimientoService.findAllSimple(page, limit, id_empresa);
+    return this.movimientoService.findAllSimple(page, limit, id_empresa, fecha, id_usuario_hk, id_usuario_c, id_usuario_s);
   }
 
   @UseGuards(AuthGuard)

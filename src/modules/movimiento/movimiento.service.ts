@@ -3,12 +3,13 @@ import { CreateMovimientoDto } from './dto/create-movimiento.dto';
 import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Movimiento } from './entities/movimiento.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { mapMovimiento, mapMovimientoSimple } from 'src/utils/map.utils';
 import { MovAmenities } from './entities/mov-amenitie.entity';
 import { MovFrigobar } from './entities/mov-frigobar.entity';
 import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
+import { format } from 'date-fns';
 
 @Injectable()
 export class MovimientoService {
@@ -78,29 +79,55 @@ export class MovimientoService {
     };
   }
 
-  async findAllSimple(page: number, limit: number, id_empresa: number) {
+  async findAllSimple(
+    page: number,
+    limit: number,
+    id_empresa: number,
+    fecha: string,
+    id_usuario_hk: number,
+    id_usuario_c: number,
+    id_usuario_s: number,
+  ) {
+    const qb = this.repo.createQueryBuilder('movimiento');
 
-    const totalRecords = await this.repo.count({
-      where: { empresa: { id: id_empresa } },
-    });
+    // Inner Join
+    qb.innerJoinAndSelect('movimiento.habitacion', 'habitacion');
+    qb.innerJoinAndSelect('movimiento.statusHabitacion', 'statusHabitacion');
+    qb.innerJoinAndSelect('movimiento.empresa', 'empresa');
+    qb.leftJoinAndSelect('movimiento.usuarioH', 'usuarioH');
+    qb.leftJoinAndSelect('movimiento.usuarioS', 'usuarioS');
+    qb.leftJoinAndSelect('movimiento.usuarioC', 'usuarioC');
+    qb.innerJoinAndSelect('habitacion.tipoHabitacion', 'tipoHabitacion');
+    qb.innerJoinAndSelect('habitacion.piso', 'piso');
 
-    const movimientos = await this.repo.find({
-      relations: [
-        'habitacion',
-        'statusHabitacion',
-        'usuarioH',
-        'usuarioS',
-        'usuarioC',
-        'habitacion.tipoHabitacion',
-        'habitacion.piso',
-      ],
-      where: { empresa: { id: id_empresa } },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    // Where
+    if (id_empresa) {
+      qb.andWhere('movimiento.empresa = :id_empresa', { id_empresa });
+    }
+    if (fecha) {
+      qb.andWhere('movimiento.fecha = :fecha', { fecha });
+    }
+
+    if (id_usuario_hk) {
+      qb.andWhere('movimiento.usuarioH = :id_usuario_hk', { id_usuario_hk });
+    }
+
+    if (id_usuario_c) {
+      qb.andWhere('movimiento.usuarioC = :id_usuario_c', { id_usuario_c });
+    }
+
+    if (id_usuario_s) {
+      qb.andWhere('movimiento.usuarioS = :id_usuario_s', { id_usuario_s });
+    }
+
+    // Paginacion
+    qb.skip((page - 1) * limit);
+    qb.take(limit);
+
+    const [movimientos, count] = await qb.getManyAndCount();
 
     return {
-      totalPages: Math.ceil(totalRecords / limit),
+      totalPages: Math.ceil(count / limit),
       count: movimientos.length,
       data: movimientos.map(mapMovimientoSimple),
     };

@@ -14,6 +14,8 @@ export const mapMovimientoSimple = (mov: Movimiento) => {
     nomC: mov?.usuarioC?.nombres ?? null,
     nomS: mov?.usuarioS?.nombres ?? null,
     statusHab: mov?.statusHabitacion?.codigo ?? null,
+    fecha: mov?.fecha ?? null,
+    id_empresa: mov?.empresa?.id ?? null
   };
 };
 
