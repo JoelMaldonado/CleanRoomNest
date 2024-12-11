@@ -35,15 +35,14 @@ export class MovimientoController {
     return this.movimientoService.findAll(filtertDto, user.id_empresa);
   }
 
-  @UseGuards(AuthGuard)
   @Get('simple')
   findAllSimple(
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('limit', ParseIntPipe) limit: number = 10,
+    @Query('id_empresa', ParseIntPipe) id_empresa: number,
     @Req() req: Request,
   ) {
-    const user = req[constants.user];
-    return this.movimientoService.findAllSimple(page, limit, user.id_empresa);
+    return this.movimientoService.findAllSimple(page, limit, id_empresa);
   }
 
   @UseGuards(AuthGuard)
