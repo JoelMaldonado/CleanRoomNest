@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Movimiento } from './entities/movimiento.entity';
 import { Repository } from 'typeorm';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
-import { mapMovimiento } from 'src/utils/map.utils';
+import { mapMovimiento, mapMovimientoSimple } from 'src/utils/map.utils';
 import { MovAmenities } from './entities/mov-amenitie.entity';
 import { MovFrigobar } from './entities/mov-frigobar.entity';
 import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
@@ -75,6 +75,34 @@ export class MovimientoService {
       totalPages,
       count: items.length,
       data: items.map(mapMovimiento),
+    };
+  }
+
+  async findAllSimple(page: number, limit: number, id_empresa: number) {
+
+    const totalRecords = await this.repo.count({
+      where: { empresa: { id: id_empresa } },
+    });
+
+    const movimientos = await this.repo.find({
+      relations: [
+        'habitacion',
+        'statusHabitacion',
+        'usuarioH',
+        'usuarioS',
+        'usuarioC',
+        'habitacion.tipoHabitacion',
+        'habitacion.piso',
+      ],
+      where: { empresa: { id: id_empresa } },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      totalPages: Math.ceil(totalRecords / limit),
+      count: movimientos.length,
+      data: movimientos.map(mapMovimientoSimple),
     };
   }
 

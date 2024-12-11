@@ -4,6 +4,19 @@ import { MovFrigobar } from 'src/modules/movimiento/entities/mov-frigobar.entity
 import { MovRopaBlanca } from 'src/modules/movimiento/entities/mov-ropablanca.entity';
 import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 
+export const mapMovimientoSimple = (mov: Movimiento) => {
+  return {
+    id: mov?.id ?? null,
+    tipoHab: mov?.habitacion?.tipoHabitacion?.descripcion ?? null,
+    numHab: mov?.habitacion?.codigo ?? null,
+    enProceso: mov?.enprocesoc == 1,
+    nomHK: mov?.usuarioH?.nombres ?? null,
+    nomC: mov?.usuarioC?.nombres ?? null,
+    nomS: mov?.usuarioS?.nombres ?? null,
+    statusHab: mov?.statusHabitacion?.codigo ?? null,
+  };
+};
+
 export const mapMovimiento = (mov: Movimiento) => {
   let tiempoTardado = '';
   if (mov.fechahorafC && mov.fechahoraiC) {

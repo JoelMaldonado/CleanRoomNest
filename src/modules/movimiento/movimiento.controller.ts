@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MovimientoService } from './movimiento.service';
 import { CreateMovimientoDto } from './dto/create-movimiento.dto';
@@ -32,6 +33,17 @@ export class MovimientoController {
   findAll(@Query() filtertDto: MovimientoFilterDto, @Req() req: Request) {
     const user = req[constants.user];
     return this.movimientoService.findAll(filtertDto, user.id_empresa);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('simple')
+  findAllSimple(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 10,
+    @Req() req: Request,
+  ) {
+    const user = req[constants.user];
+    return this.movimientoService.findAllSimple(page, limit, user.id_empresa);
   }
 
   @UseGuards(AuthGuard)
