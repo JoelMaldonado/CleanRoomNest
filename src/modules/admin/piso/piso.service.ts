@@ -52,9 +52,7 @@ export class PisoService {
     if (id_empresa) {
       qb.where('piso.id_empresa = :id_empresa', { id_empresa });
     }
-
     const items = await qb.getMany();
-
     return items.map(mapPiso);
   }
 

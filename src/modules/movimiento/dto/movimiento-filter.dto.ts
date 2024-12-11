@@ -3,16 +3,35 @@ import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class MovimientoFilterDto {
   @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  page: number;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  limit: number;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  id_empresa: number;
+
+  @IsOptional()
   @IsString()
-  fecha?: string; // Para filtrar por fecha (en formato 'YYYY-MM-DD')
+  fecha: string;
+
+  @IsOptional()
+  @IsString()
+  cod_tipo_usuario: string;
 
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  page?: number = 1;
+  id_usuario: number;
 
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  limit?: number = 10;
+  id_piso: number;
 }

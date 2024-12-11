@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMovimientoDto } from './dto/create-movimiento.dto';
-import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Movimiento } from './entities/movimiento.entity';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { mapMovimiento, mapMovimientoSimple } from 'src/utils/map.utils';
 import { MovAmenities } from './entities/mov-amenitie.entity';
 import { MovFrigobar } from './entities/mov-frigobar.entity';
 import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
-import { format } from 'date-fns';
+import { log } from 'console';
 
 @Injectable()
 export class MovimientoService {
@@ -27,11 +25,9 @@ export class MovimientoService {
     private readonly repoMovFrigobar: Repository<MovFrigobar>,
   ) {}
 
-  create(createMovimientoDto: CreateMovimientoDto) {
-    return 'This action adds a new movimiento';
-  }
+  async findAll(dto: MovimientoFilterDto) {
+    const { page = 1, limit = 10, fecha, id_empresa } = dto;
 
-  async findAll(filtertDto: MovimientoFilterDto, id_empresa: number) {
     const query = this.repo.createQueryBuilder('movimiento');
 
     /* Inner Join */
@@ -57,17 +53,15 @@ export class MovimientoService {
     // Movimiento Amenities
     query.leftJoinAndSelect('movimiento.ropaBlanca', 'ropaBlanca');
 
-    if (filtertDto.fecha) {
-      query.andWhere('movimiento.fecha = :fecha', { fecha: filtertDto.fecha });
+    if (fecha) {
+      query.andWhere('movimiento.fecha = :fecha', { fecha: fecha });
     }
 
     query.andWhere('movimiento.id_empresa = :id_empresa', { id_empresa });
 
-    const { page = 1, limit = 10 } = filtertDto;
-
     const skip = (page - 1) * limit;
 
-    query.skip(skip).take(filtertDto.limit);
+    query.skip(skip).take(limit);
 
     const [items, total] = await query.getManyAndCount();
     const totalPages = Math.ceil(total / limit);
@@ -79,34 +73,43 @@ export class MovimientoService {
     };
   }
 
-  async findAllSimple(
-    page: number,
-    limit: number,
-    id_empresa: number,
-    fecha: string,
-    cod_tipo_usuario: string,
-    id_usuario: number,
-  ) {
+  async findAllSimple(dto: MovimientoFilterDto) {
+    const {
+      page = 1,
+      limit = 10,
+      id_empresa,
+      fecha,
+      cod_tipo_usuario,
+      id_usuario,
+      id_piso,
+    } = dto;
+
     const qb = this.repo.createQueryBuilder('movimiento');
 
     // Inner Join
-    qb.innerJoinAndSelect('movimiento.habitacion', 'habitacion');
-    qb.innerJoinAndSelect('movimiento.statusHabitacion', 'statusHabitacion');
-    qb.innerJoinAndSelect('movimiento.empresa', 'empresa');
+    qb.leftJoinAndSelect('movimiento.empresa', 'empresa');
+    qb.leftJoinAndSelect('movimiento.habitacion', 'habitacion');
+    qb.leftJoinAndSelect('habitacion.piso', 'piso');
+    qb.leftJoinAndSelect('movimiento.statusHabitacion', 'statusHabitacion');
+    qb.leftJoinAndSelect('habitacion.tipoHabitacion', 'tipoHabitacion');
     qb.leftJoinAndSelect('movimiento.usuarioH', 'usuarioH');
     qb.leftJoinAndSelect('movimiento.usuarioS', 'usuarioS');
     qb.leftJoinAndSelect('movimiento.usuarioC', 'usuarioC');
-    qb.innerJoinAndSelect('habitacion.tipoHabitacion', 'tipoHabitacion');
-    qb.innerJoinAndSelect('habitacion.piso', 'piso');
 
     // Where
     if (id_empresa) {
-      qb.andWhere('movimiento.empresa = :id_empresa', { id_empresa });
+      qb.where('empresa.id = :id_empresa', { id_empresa });
     }
+
     if (fecha) {
       qb.andWhere('movimiento.fecha = :fecha', { fecha });
     }
 
+    if (id_piso) {
+      qb.andWhere('piso.id = :id_piso', { id_piso });
+    }
+    
+    
     switch (cod_tipo_usuario) {
       case 'H':
         qb.andWhere('movimiento.usuarioH = :id_usuario', { id_usuario });
@@ -119,12 +122,15 @@ export class MovimientoService {
         break;
     }
 
+    // ordenar descendentemente
+    qb.orderBy('habitacion.codigo', 'ASC');
+
     // Paginacion
     qb.skip((page - 1) * limit);
     qb.take(limit);
 
     const [movimientos, count] = await qb.getManyAndCount();
-
+    
     return {
       totalPages: Math.ceil(count / limit),
       count: movimientos.length,
@@ -152,13 +158,5 @@ export class MovimientoService {
       where: { id },
     });
     return mapMovimiento(movimiento);
-  }
-
-  update(id: number, updateMovimientoDto: UpdateMovimientoDto) {
-    return `This action updates a #${id} movimiento`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} movimiento`;
   }
 }
