@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PisoService } from './piso.service';
 import { CreatePisoDto } from './dto/create-piso.dto';
 import { UpdatePisoDto } from './dto/update-piso.dto';
@@ -8,13 +8,15 @@ export class PisoController {
   constructor(private readonly pisoService: PisoService) {}
 
   @Post()
-  create(@Body() createPisoDto: CreatePisoDto) {
-    return this.pisoService.create(createPisoDto);
+  create(@Body() dto: CreatePisoDto) {
+    return this.pisoService.create(dto);
   }
 
   @Get()
-  findAll() {
-    return this.pisoService.findAll();
+  findAll(
+    @Query('id_empresa') id_empresa: string,
+  ) {
+    return this.pisoService.findAll(id_empresa);
   }
 
   @Get(':id')

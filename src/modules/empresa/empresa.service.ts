@@ -20,8 +20,8 @@ export class EmpresaService {
     return this.repo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} empresa`;
+  async findOne(id: number) {
+    return await this.repo.findOne({ where: { id } });
   }
 
   update(id: number, updateEmpresaDto: UpdateEmpresaDto) {
