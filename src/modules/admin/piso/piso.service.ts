@@ -60,10 +60,10 @@ export class PisoService {
 
   async findOne(id: number) {
     const item = await this.repo.findOne({
-      relations: ['empresa'],
+      relations: ['empresa', 'habitaciones'],
       where: { id },
     });
-    return item;
+    return mapPiso(item);
   }
 
   async update(id: number, updatePisoDto: UpdatePisoDto) {
