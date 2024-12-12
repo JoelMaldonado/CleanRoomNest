@@ -32,7 +32,6 @@ export class MovimientoController {
     return this.movimientoService.findAllSimple(dto);
   }
 
-  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.movimientoService.findOne(+id);

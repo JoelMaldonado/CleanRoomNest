@@ -95,6 +95,9 @@ export class MovimientoService {
     qb.leftJoinAndSelect('movimiento.usuarioH', 'usuarioH');
     qb.leftJoinAndSelect('movimiento.usuarioS', 'usuarioS');
     qb.leftJoinAndSelect('movimiento.usuarioC', 'usuarioC');
+    qb.leftJoinAndSelect('movimiento.statusLimpH', 'statusLimpH');
+    qb.leftJoinAndSelect('movimiento.statusLimpC', 'statusLimpC');
+    qb.leftJoinAndSelect('movimiento.statusLimpS', 'statusLimpS');
 
     // Where
     if (id_empresa) {

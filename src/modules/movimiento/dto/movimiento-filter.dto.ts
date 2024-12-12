@@ -34,4 +34,6 @@ export class MovimientoFilterDto {
   @IsInt()
   @Type(() => Number)
   id_piso: number;
+
+  
 }
