@@ -108,8 +108,7 @@ export class MovimientoService {
     if (id_piso) {
       qb.andWhere('piso.id = :id_piso', { id_piso });
     }
-    
-    
+
     switch (cod_tipo_usuario) {
       case 'H':
         qb.andWhere('movimiento.usuarioH = :id_usuario', { id_usuario });
@@ -130,7 +129,7 @@ export class MovimientoService {
     qb.take(limit);
 
     const [movimientos, count] = await qb.getManyAndCount();
-    
+
     return {
       totalPages: Math.ceil(count / limit),
       count: movimientos.length,

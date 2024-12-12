@@ -7,15 +7,16 @@ import { Movimiento } from 'src/modules/movimiento/entities/movimiento.entity';
 export const mapMovimientoSimple = (mov: Movimiento) => {
   return {
     id: mov?.id ?? null,
-    tipoHab: mov?.habitacion?.tipoHabitacion?.descripcion ?? null,
+    idHab: mov?.habitacion?.id ?? null,
     numHab: mov?.habitacion?.codigo ?? null,
+    tipoHab: mov?.habitacion?.tipoHabitacion?.descripcion ?? null,
     enProceso: mov?.enprocesoc == 1,
     nomHK: mov?.usuarioH?.nombres ?? null,
     nomC: mov?.usuarioC?.nombres ?? null,
     nomS: mov?.usuarioS?.nombres ?? null,
     statusHab: mov?.statusHabitacion?.codigo ?? null,
     fecha: mov?.fecha ?? null,
-    id_empresa: mov?.empresa?.id ?? null
+    idEmpresa: mov?.empresa?.id ?? null
   };
 };
 
