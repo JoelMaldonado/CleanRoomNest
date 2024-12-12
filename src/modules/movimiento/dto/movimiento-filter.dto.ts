@@ -26,6 +26,10 @@ export class MovimientoFilterDto {
   cod_tipo_usuario: string;
 
   @IsOptional()
+  @IsString()
+  cod_status_limpieza: string;
+
+  @IsOptional()
   @IsInt()
   @Type(() => Number)
   id_usuario: number;
@@ -34,6 +38,5 @@ export class MovimientoFilterDto {
   @IsInt()
   @Type(() => Number)
   id_piso: number;
-
   
 }

@@ -80,6 +80,7 @@ export class MovimientoService {
       id_empresa,
       fecha,
       cod_tipo_usuario,
+      cod_status_limpieza,
       id_usuario,
       id_piso,
     } = dto;
@@ -112,15 +113,37 @@ export class MovimientoService {
       qb.andWhere('piso.id = :id_piso', { id_piso });
     }
 
+    
     switch (cod_tipo_usuario) {
       case 'H':
-        qb.andWhere('movimiento.usuarioH = :id_usuario', { id_usuario });
+        if (id_usuario) {
+          qb.andWhere('movimiento.usuarioH = :id_usuario', { id_usuario });
+        }
+        if (cod_status_limpieza) {
+          qb.andWhere('statusLimpH.codigo = :cod_status_limpieza', {
+            cod_status_limpieza,
+          });
+        }
         break;
       case 'S':
-        qb.andWhere('movimiento.usuarioS = :id_usuario', { id_usuario });
+        if (id_usuario) {
+          qb.andWhere('movimiento.usuarioS = :id_usuario', { id_usuario });
+        }
+        if (cod_status_limpieza) {
+          qb.andWhere('statusLimpS.codigo = :cod_status_limpieza', {
+            cod_status_limpieza,
+          });
+        }
         break;
       case 'C':
-        qb.andWhere('movimiento.usuarioC = :id_usuario', { id_usuario });
+        if (id_usuario) {
+          qb.andWhere('movimiento.usuarioC = :id_usuario', { id_usuario });
+        }
+        if (cod_status_limpieza) {
+          qb.andWhere('statusLimpC.codigo = :cod_status_limpieza', {
+            cod_status_limpieza,
+          });
+        }
         break;
     }
 
@@ -156,9 +179,13 @@ export class MovimientoService {
         'ropaBlanca.ropaBlanca',
         'frigobar',
         'frigobar.frigobar',
+        'statusLimpH',
+        'statusLimpS',
+        'statusLimpC',
+        'empresa',
       ],
       where: { id },
     });
-    return mapMovimiento(movimiento);
+    return mapMovimientoSimple(movimiento);
   }
 }
