@@ -5,14 +5,18 @@ import {
   Query,
   UseGuards,
   Req,
-  ParseIntPipe,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { MovimientoService } from './movimiento.service';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Request } from 'express';
 import { constants } from 'src/config/constants';
+import { AsignarCuarteleroDto } from './dto/asignar-cuartelero.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('movimiento')
 @Controller('movimiento')
 export class MovimientoController {
   constructor(private readonly movimientoService: MovimientoService) {}
@@ -34,6 +38,11 @@ export class MovimientoController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.movimientoService.findOne(+id);
+    return this.movimientoService.findOneSimple(+id);
+  }
+
+  @Post('asignar-cuartelero')
+  asignarCuartelero(@Body() dto: AsignarCuarteleroDto) {
+    return this.movimientoService.asignarCuartelero(dto);
   }
 }

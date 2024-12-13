@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Movimiento } from './entities/movimiento.entity';
 import { Repository } from 'typeorm';
@@ -7,7 +7,8 @@ import { mapMovimiento, mapMovimientoSimple } from 'src/utils/map.utils';
 import { MovAmenities } from './entities/mov-amenitie.entity';
 import { MovFrigobar } from './entities/mov-frigobar.entity';
 import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
-import { log } from 'console';
+import { AsignarCuarteleroDto } from './dto/asignar-cuartelero.dto';
+import { UsuarioService } from '../usuario/usuario.service';
 
 @Injectable()
 export class MovimientoService {
@@ -15,14 +16,7 @@ export class MovimientoService {
     @InjectRepository(Movimiento)
     private readonly repo: Repository<Movimiento>,
 
-    @InjectRepository(MovAmenities)
-    private readonly repoMovAmenities: Repository<MovAmenities>,
-
-    @InjectRepository(MovRopaBlanca)
-    private readonly repoMovRopaBlanca: Repository<MovRopaBlanca>,
-
-    @InjectRepository(MovFrigobar)
-    private readonly repoMovFrigobar: Repository<MovFrigobar>,
+    private readonly usuarioService: UsuarioService,
   ) {}
 
   async findAll(dto: MovimientoFilterDto) {
@@ -113,7 +107,6 @@ export class MovimientoService {
       qb.andWhere('piso.id = :id_piso', { id_piso });
     }
 
-    
     switch (cod_tipo_usuario) {
       case 'H':
         if (id_usuario) {
@@ -163,7 +156,7 @@ export class MovimientoService {
     };
   }
 
-  async findOne(id: number) {
+  async findOneSimple(id: number) {
     const movimiento = await this.repo.findOne({
       relations: [
         'habitacion',
@@ -187,5 +180,54 @@ export class MovimientoService {
       where: { id },
     });
     return mapMovimientoSimple(movimiento);
+  }
+
+  async findOne(id: number) {
+    const movimiento = await this.repo.findOne({
+      relations: [
+        'habitacion',
+        'statusHabitacion',
+        'usuarioH',
+        'usuarioS',
+        'usuarioC',
+        'habitacion.tipoHabitacion',
+        'habitacion.piso',
+        'amenities',
+        'amenities.amenitie',
+        'ropaBlanca',
+        'ropaBlanca.ropaBlanca',
+        'frigobar',
+        'frigobar.frigobar',
+        'statusLimpH',
+        'statusLimpS',
+        'statusLimpC',
+        'empresa',
+      ],
+      where: { id },
+    });
+    if (!movimiento) {
+      throw new NotFoundException('Movimiento no encontrado');
+    }
+    return movimiento;
+  }
+
+  async asignarCuartelero(dto: AsignarCuarteleroDto) {
+    const hk = await this.usuarioService.findOne(dto.idHK, dto.idEmpresa);
+    const cuartelero = await this.usuarioService.findOne(
+      dto.idC,
+      dto.idEmpresa,
+    );
+
+    const movimiento = await this.findOne(dto.id);
+
+    // Actualizar solo algunos campos del Movimiento
+    movimiento.usuarioH = hk;
+    movimiento.usuarioC = cuartelero;
+    movimiento.fechahoraH = dto.fecha;
+    movimiento.enprocesoc = 0;
+
+    await this.repo.save(movimiento);
+
+    return this.findOneSimple(movimiento.id);
   }
 }

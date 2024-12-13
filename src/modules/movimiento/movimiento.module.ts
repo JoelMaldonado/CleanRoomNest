@@ -6,6 +6,7 @@ import { Movimiento } from './entities/movimiento.entity';
 import { MovAmenities } from './entities/mov-amenitie.entity';
 import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
 import { MovFrigobar } from './entities/mov-frigobar.entity';
+import { UsuarioModule } from '../usuario/usuario.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MovFrigobar } from './entities/mov-frigobar.entity';
       MovRopaBlanca,
       MovFrigobar,
     ]),
+    UsuarioModule,
   ],
   controllers: [MovimientoController],
   providers: [MovimientoService],

@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
@@ -11,10 +9,6 @@ export class UsuarioService {
     @InjectRepository(Usuario)
     private readonly repo: Repository<Usuario>,
   ) {}
-
-  create(createUsuarioDto: CreateUsuarioDto) {
-    return 'This action adds a new usuario';
-  }
 
   async findAll(id_empresa: number, cod_tipo_usuario: string) {
     const qb = this.repo.createQueryBuilder('usuario');
@@ -33,19 +27,19 @@ export class UsuarioService {
     return usuarios;
   }
 
-  async findOne(id: number) {
-    const usuario = await this.repo.findOne({
-      where: { id },
-    });
+  async findOne(id: number, idEmpresa?: number) {
+    const qb = this.repo.createQueryBuilder('usuario');
+    if (idEmpresa) {
+      qb.andWhere('usuario.id_empresa = :idEmpresa', { idEmpresa });
+    }
+    qb.andWhere('usuario.id = :id', { id });
+    const usuario = await qb.getOne();
+
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
     return usuario;
-  }
-
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return `This action updates a #${id} usuario`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
   }
 
   async findByLogin(user: string, ruc: string) {
