@@ -83,9 +83,6 @@ export class Empresa {
   @OneToMany(() => Habitacion, (h) => h.empresa)
   habitaciones: Habitacion[];
 
-  @OneToMany(() => Piso, (p) => p.empresa)
-  pisos: Piso[]
-
   @OneToMany(() => StatusHabitacion, (s) => s.empresa)
   statusHabitaciones: StatusHabitacion[];
 

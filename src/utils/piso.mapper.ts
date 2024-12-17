@@ -5,11 +5,11 @@ export const mapPiso = (mov: Piso) => {
     return null;
   }
 
-  const { id, empresa, numpiso, descripcion, habitaciones, activo } = mov;
+  const { id, id_empresa, numpiso, descripcion, habitaciones, activo } = mov;
 
   return {
     id: id ?? null,
-    idEmpresa: empresa?.id ?? null,
+    idEmpresa: id_empresa ?? null,
     numPiso: numpiso ?? null,
     descripcion: descripcion ?? null,
     totalHabitaciones: habitaciones?.length ?? 0,

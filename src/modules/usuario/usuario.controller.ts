@@ -13,11 +13,13 @@ export class UsuarioController {
     return this.usuarioService.findAll(id_empresa, cod_tipo_usuario);
   }
 
+  @Get('count')
+  count(@Query('id_empresa') id_empresa: number) {
+    return this.usuarioService.count(id_empresa);
+  }
+
   @Get(':id')
-  findOne(
-    @Param('id') id: string,
-    @Query('id_empresa') id_empresa: number,
-  ) {
+  findOne(@Param('id') id: string, @Query('id_empresa') id_empresa: number) {
     return this.usuarioService.findOne(+id, id_empresa);
   }
 }

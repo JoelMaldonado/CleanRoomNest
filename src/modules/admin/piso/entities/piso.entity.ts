@@ -39,12 +39,11 @@ export class Piso {
   fecmodificacion: Date;
 
   // Relacion Many To One
-  @ManyToOne(
-    () => Empresa,
-    (empresa) => empresa.pisos,
-  )
-  @JoinColumn({ name: 'id_empresa' })
-  empresa: Empresa;
+
+  @Column({
+    type: 'int'
+  })
+  id_empresa: number;
 
   // Relacion One To Many
   @OneToMany(() => Habitacion, (habitacion) => habitacion.piso)

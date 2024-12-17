@@ -212,19 +212,18 @@ export class MovimientoService {
   }
 
   async asignarCuartelero(dto: AsignarCuarteleroDto) {
-    const hk = await this.usuarioService.findOne(dto.idHK, dto.idEmpresa);
-    const cuartelero = await this.usuarioService.findOne(
-      dto.idC,
-      dto.idEmpresa,
-    );
+    const { id, idC, idEmpresa } = dto;
+    const movimiento = await this.findOne(id);
 
-    const movimiento = await this.findOne(dto.id);
-
-    // Actualizar solo algunos campos del Movimiento
-    movimiento.usuarioH = hk;
-    movimiento.usuarioC = cuartelero;
-    movimiento.fechahoraH = dto.fecha;
-    movimiento.enprocesoc = 0;
+    if (idC === 0) {
+      movimiento.usuarioC = null;
+    } else {
+      const cuartelero = await this.usuarioService.findOne(
+        idC,
+        idEmpresa,
+      );
+      movimiento.usuarioC = cuartelero;
+    }
 
     await this.repo.save(movimiento);
 

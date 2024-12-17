@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { HabitacionService } from './habitacion.service';
 import { CreateHabitacionDto } from './dto/create-habitacion.dto';
 import { UpdateHabitacionDto } from './dto/update-habitacion.dto';
@@ -15,6 +15,13 @@ export class HabitacionController {
   @Get()
   findAll() {
     return this.habitacionService.findAll();
+  }
+
+  @Get('count')
+  count(
+    @Query('id_empresa') id_empresa: number,
+  ) {
+    return this.habitacionService.count(id_empresa);
   }
 
   @Get(':id')

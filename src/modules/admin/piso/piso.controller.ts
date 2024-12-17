@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { PisoService } from './piso.service';
 import { CreatePisoDto } from './dto/create-piso.dto';
 import { UpdatePisoDto } from './dto/update-piso.dto';
@@ -13,10 +22,13 @@ export class PisoController {
   }
 
   @Get()
-  findAll(
-    @Query('id_empresa') id_empresa: string,
-  ) {
+  findAll(@Query('id_empresa') id_empresa: string) {
     return this.pisoService.findAll(id_empresa);
+  }
+
+  @Get('count')
+  count(@Query('id_empresa') id_empresa: number) {
+    return this.pisoService.count(id_empresa);
   }
 
   @Get(':id')

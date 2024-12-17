@@ -27,6 +27,18 @@ export class UsuarioService {
     return usuarios;
   }
 
+  async count(id_empresa: number) {
+    const count = await this.repo.count({
+      where: {
+        empresa: {
+          id: id_empresa,
+        },
+      },
+    });
+
+    return { count };
+  }
+
   async findOne(id: number, idEmpresa?: number) {
     const qb = this.repo.createQueryBuilder('usuario');
     if (idEmpresa) {

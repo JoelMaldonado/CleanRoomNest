@@ -28,7 +28,7 @@ export class PisoService {
     const piso = new Piso();
     piso.numpiso = dto.numPiso;
     piso.descripcion = dto.descripcion;
-    piso.empresa = empresa;
+    piso.id_empresa = dto.idEmpresa;
     piso.activo = 'S';
     piso.usuario = dto.usuario;
 
@@ -45,7 +45,6 @@ export class PisoService {
     const qb = this.repo.createQueryBuilder('piso');
 
     // Inner Join
-    qb.innerJoinAndSelect('piso.empresa', 'empresa');
     qb.innerJoinAndSelect('piso.habitaciones', 'habitaciones');
 
     // Where
@@ -53,9 +52,24 @@ export class PisoService {
       qb.where('piso.id_empresa = :id_empresa', { id_empresa });
     }
     const items = await qb.getMany();
+    console.log(await qb.getCount());
+
     return items.map(mapPiso);
   }
 
+  async count(id_empresa: number) {
+    const qb = this.repo.createQueryBuilder('piso');
+
+    if (id_empresa) {
+      qb.where('piso.id_empresa = :id_empresa', { id_empresa });
+    }
+
+    const count = await qb.getCount();
+
+    return {
+      count,
+    };
+  }
   async findOne(id: number) {
     const item = await this.repo.findOne({
       relations: ['empresa', 'habitaciones'],
