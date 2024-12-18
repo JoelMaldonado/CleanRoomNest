@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
+import { mapUsuario } from 'src/utils/usuario.mapper';
 
 @Injectable()
 export class UsuarioService {
@@ -13,9 +14,10 @@ export class UsuarioService {
   async findAll(id_empresa: number, cod_tipo_usuario: string) {
     const qb = this.repo.createQueryBuilder('usuario');
     qb.leftJoinAndSelect('usuario.tipoUsuario', 'tipoUsuario');
+    qb.leftJoinAndSelect('usuario.empresa', 'empresa');
 
     if (id_empresa) {
-      qb.where('usuario.id_empresa = :id_empresa', { id_empresa });
+      qb.andWhere('empresa.id = :id_empresa', { id_empresa });
     }
     if (cod_tipo_usuario) {
       qb.andWhere('tipoUsuario.codigo = :cod_tipo_usuario', {
@@ -24,7 +26,7 @@ export class UsuarioService {
     }
 
     const usuarios = await qb.getMany();
-    return usuarios;
+    return usuarios.map(mapUsuario);
   }
 
   async count(id_empresa: number) {
