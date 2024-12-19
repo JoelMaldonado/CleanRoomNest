@@ -98,10 +98,10 @@ export class PisoService {
     };
   }
   async findOne(id: number) {
-    const item = await this.repo.findOne({
-      relations: ['empresa', 'habitaciones'],
-      where: { id },
-    });
+    const qb = this.repo.createQueryBuilder('piso');
+    qb.leftJoinAndSelect('piso.habitaciones', 'habitaciones');
+    qb.where('piso.id = :id', { id });
+    const item = await qb.getOne();
     return mapPiso(item);
   }
 }

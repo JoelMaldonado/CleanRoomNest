@@ -25,7 +25,6 @@ export class Piso {
   @Column({ type: 'char', default: 'S' })
   activo: string;
 
-
   @Column({ type: 'varchar', default: '' })
   usuario: string;
 
@@ -41,7 +40,7 @@ export class Piso {
   // Relacion Many To One
 
   @Column({
-    type: 'int'
+    type: 'int',
   })
   id_empresa: number;
 
