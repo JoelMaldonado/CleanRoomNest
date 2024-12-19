@@ -7,10 +7,11 @@ import {
   Param,
   Delete,
   Query,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { PisoService } from './piso.service';
 import { CreatePisoDto } from './dto/create-piso.dto';
-import { UpdatePisoDto } from './dto/update-piso.dto';
+import { FilterPisoDto } from './dto/filter.piso.dto';
 
 @Controller('piso')
 export class PisoController {
@@ -22,8 +23,13 @@ export class PisoController {
   }
 
   @Get()
-  findAll(@Query('id_empresa') id_empresa: string) {
-    return this.pisoService.findAll(id_empresa);
+  findAll(@Query() filter: FilterPisoDto) {
+    return this.pisoService.findAll(filter);
+  }
+
+  @Get('movimientos')
+  findAllMovimientos(@Query() filter: FilterPisoDto) {
+    return this.pisoService.findAllMovimientos(filter);
   }
 
   @Get('count')
@@ -34,15 +40,5 @@ export class PisoController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.pisoService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePisoDto: UpdatePisoDto) {
-    return this.pisoService.update(+id, updatePisoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pisoService.remove(+id);
   }
 }

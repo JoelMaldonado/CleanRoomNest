@@ -4,11 +4,9 @@ import { Movimiento } from './entities/movimiento.entity';
 import { Repository } from 'typeorm';
 import { MovimientoFilterDto } from './dto/movimiento-filter.dto';
 import { mapMovimiento, mapMovimientoSimple } from 'src/utils/map.utils';
-import { MovAmenities } from './entities/mov-amenitie.entity';
-import { MovFrigobar } from './entities/mov-frigobar.entity';
-import { MovRopaBlanca } from './entities/mov-ropablanca.entity';
 import { AsignarCuarteleroDto } from './dto/asignar-cuartelero.dto';
 import { UsuarioService } from '../usuario/usuario.service';
+import { format } from 'date-fns';
 
 @Injectable()
 export class MovimientoService {
@@ -156,6 +154,22 @@ export class MovimientoService {
     };
   }
 
+  async countByIDPiso(id_piso: number) {
+    const qb = this.repo.createQueryBuilder('movimiento');
+
+    qb.leftJoin('movimiento.habitacion', 'habitacion');
+    qb.leftJoin('habitacion.piso', 'piso');
+
+    qb.where('piso.id = :id_piso', { id_piso });
+
+    const formattedDate = format(new Date(), 'yyyy-MM-dd');
+
+    qb.andWhere('movimiento.fecha = :fecha', { fecha: formattedDate });
+
+    const count = await qb.getCount();
+    return count;
+  }
+
   async findOneSimple(id: number) {
     const movimiento = await this.repo.findOne({
       relations: [
@@ -218,10 +232,7 @@ export class MovimientoService {
     if (idC === 0) {
       movimiento.usuarioC = null;
     } else {
-      const cuartelero = await this.usuarioService.findOne(
-        idC,
-        idEmpresa,
-      );
+      const cuartelero = await this.usuarioService.findOne(idC, idEmpresa);
       movimiento.usuarioC = cuartelero;
     }
 

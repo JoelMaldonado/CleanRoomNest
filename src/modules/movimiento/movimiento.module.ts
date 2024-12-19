@@ -18,6 +18,7 @@ import { UsuarioModule } from '../usuario/usuario.module';
     ]),
     UsuarioModule,
   ],
+  exports: [MovimientoService],
   controllers: [MovimientoController],
   providers: [MovimientoService],
 })

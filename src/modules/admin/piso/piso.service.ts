@@ -4,12 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePisoDto } from './dto/create-piso.dto';
-import { UpdatePisoDto } from './dto/update-piso.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Piso } from './entities/piso.entity';
 import { mapPiso } from 'src/utils/piso.mapper';
 import { EmpresaService } from 'src/modules/empresa/empresa.service';
+import { FilterPisoDto } from './dto/filter.piso.dto';
+import { MovimientoService } from 'src/modules/movimiento/movimiento.service';
 
 @Injectable()
 export class PisoService {
@@ -18,6 +19,8 @@ export class PisoService {
     private readonly repo: Repository<Piso>,
 
     private readonly empresaService: EmpresaService,
+
+    private readonly movimientoService: MovimientoService,
   ) {}
   async create(dto: CreatePisoDto) {
     const empresa = await this.empresaService.findOne(dto.idEmpresa);
@@ -41,20 +44,44 @@ export class PisoService {
     return this.findOne(piso.id);
   }
 
-  async findAll(id_empresa: string) {
+  async findAll(filter: FilterPisoDto) {
+    const { idEmpresa } = filter;
     const qb = this.repo.createQueryBuilder('piso');
 
     // Inner Join
     qb.innerJoinAndSelect('piso.habitaciones', 'habitaciones');
 
     // Where
-    if (id_empresa) {
-      qb.where('piso.id_empresa = :id_empresa', { id_empresa });
+    if (idEmpresa) {
+      qb.where('piso.id_empresa = :idEmpresa', { idEmpresa });
     }
-    const items = await qb.getMany();
-    console.log(await qb.getCount());
 
+    const items = await qb.getMany();
     return items.map(mapPiso);
+  }
+
+  async findAllMovimientos(filter: FilterPisoDto) {
+    const { idEmpresa } = filter;
+    const qb = this.repo.createQueryBuilder('piso');
+
+    // Where
+    if (idEmpresa) {
+      qb.where('piso.id_empresa = :idEmpresa', { idEmpresa });
+    }
+
+    const items = await qb.getMany();
+
+    const itemsMap = await Promise.all(
+      items.map(async (piso) => {
+        const movs = await this.movimientoService.countByIDPiso(piso.id);
+        return {
+          ...mapPiso(piso),
+          totalHabitaciones: movs,
+        };
+      }),
+    );
+
+    return itemsMap;
   }
 
   async count(id_empresa: number) {
@@ -76,13 +103,5 @@ export class PisoService {
       where: { id },
     });
     return mapPiso(item);
-  }
-
-  async update(id: number, updatePisoDto: UpdatePisoDto) {
-    return `This action updates a #${id} piso`;
-  }
-
-  async remove(id: number) {
-    return `This action removes a #${id} piso`;
   }
 }
