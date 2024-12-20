@@ -117,6 +117,7 @@ export class MovimientoService {
         }
         break;
       case 'S':
+        /*
         if (id_usuario) {
           qb.andWhere('movimiento.usuarioS = :id_usuario', { id_usuario });
         }
@@ -125,6 +126,7 @@ export class MovimientoService {
             cod_status_limpieza,
           });
         }
+        */
         break;
       case 'C':
         if (id_usuario) {
